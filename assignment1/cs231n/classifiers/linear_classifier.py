@@ -3,8 +3,6 @@ from __future__ import print_function
 import numpy as np
 from cs231n.classifiers.linear_svm import *
 from cs231n.classifiers.softmax import *
-from past.builtins import xrange
-
 
 class LinearClassifier(object):
 
@@ -38,20 +36,9 @@ class LinearClassifier(object):
 
     # Run stochastic gradient descent to optimize W
     loss_history = []
-    for it in xrange(num_iters):
+    for it in range(num_iters):
       X_batch = None
       y_batch = None
-
-      sample_indices = np.random.choice(np.arange(num_train), batch_size)
-      X_batch = X[sample_indices]
-      y_batch = y[sample_indices]
-      #########################################################################
-      #                       END OF YOUR CODE                                #
-      #########################################################################
-
-      # evaluate loss and gradient
-      loss, grad = self.loss(X_batch, y_batch, reg)
-      loss_history.append(loss)
 
       #########################################################################
       # TODO:                                                                 #
@@ -64,7 +51,7 @@ class LinearClassifier(object):
       # Hint: Use np.random.choice to generate indices. Sampling with         #
       # replacement is faster than sampling without replacement.              #
       #########################################################################
-      self.W += -learning_rate * grad
+      pass
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -106,12 +93,8 @@ class LinearClassifier(object):
     ###########################################################################
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
-    #################################################s##########################
-    #for i in X.shape[0]:
-    #    tmp = np.dot(self.W, X[i])
-    #    y_pred[i] = np.argmax(tmp, axis=0)
-        
-    y_pred = np.argmax(X.dot(self.W), axis=1)
+    ###########################################################################
+    pass
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
