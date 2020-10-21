@@ -55,9 +55,9 @@ class TwoLayerNet(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         
-        self.params["W1"] = np.random.normal(scale=weight_scale, size=(input_dim, hidden_dim))
+        self.params["W1"] = weight_scale * np.random.randn(input_dim, hidden_dim) #np.random.normal(scale=weight_scale, size=(input_dim, hidden_dim))
         self.params["b1"] = np.zeros((hidden_dim,))
-        self.params["W2"] = np.random.normal(scale=weight_scale, size = (hidden_dim, num_classes))
+        self.params["W2"] = weight_scale * np.random.randn(hidden_dim, num_classes) #np.random.normal(scale=weight_scale, size = (hidden_dim, num_classes))
         self.params["b2"] = np.zeros((num_classes,))
 
        
@@ -288,7 +288,7 @@ class FullyConnectedNet(object):
         # layer, etc.                                                              #
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        
         caches = []
         
         layer_out = X
@@ -300,8 +300,8 @@ class FullyConnectedNet(object):
             
         
         W, b = self.params['W' + str(self.num_layers)], self.params['b' + str(self.num_layers)]
-        scores, last_layer_cache = affine_forward(layer_out, W, b)
-        caches.append(last_layer_cache)
+        scores, last_fc_cache = affine_forward(layer_out, W, b)
+        caches.append(last_fc_cache)
 
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -332,11 +332,28 @@ class FullyConnectedNet(object):
         loss, softmax_grad = softmax_loss(scores, y)
         for i in range(self.num_layers):
             w = self.params['W'+str(i+1)]
-            loss += 0.5 * self.reg * np.sum(w * w) 
-            
-        dout, dw, db = affine_backward(softmax_grad, caches[self.num_layers - 1])
-        grads['W' + str(self.num_layers)] = dw + self.reg * self.params['W' + str(self.num_layers)]
+            loss += 0.5 * self.reg * np.sum(w * w)
+        
+        last_fc_cache = caches[self.num_layers - 1]
+        dout, dw, db = affine_backward(softmax_grad, last_fc_cache)
+        grads['W' + str(self.num_layers)] = dw #+ self.reg * self.params['W' + str(self.num_layers)]
         grads['b' + str(self.num_layers)] = db
+        
+        for i in range(self.num_layers - 1, 0, -1):
+
+            W_name = "W" + str(i)
+            b_name = "b" + str(i)
+            
+            cache = caches[i-1]
+            dout, dw, db = affine_relu_backward(dout, cache)
+            grads[W_name] = dw # + self.reg * self.params[W_name]
+            grads[b_name] = db
+            
+            
+        
+        for k,v in self.params:
+            print(k)
+            print(v)
         
         
 
